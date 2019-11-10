@@ -4,13 +4,19 @@
         null_char:        .byte       0                      # Allocate byte in memory for null char
         space_char:       .byte       32                     # Allocate byte in memory for space char
         tab_char:         .byte       9                      # Allocate byte in memory for tab char
-        newline_char:     .byte       10                     # Allocate byte in memory for newline char            
+        nl_char:          .byte       10                     # Allocate byte in memory for newline char
 .text
         main:
               li $v0, 8                            # Systemcall to get the user's input
               la $a0, input_str                    # Load register with the address of the input string
               li $a1, 1001                         # Read maximum of 1001 characters from user input (including null character)
               syscall
+
+              # Load $s1 - $s4 registers with the null, newline, space and tab chars respectively
+              lb $s1, null_char
+              lb $s2, nl_char
+              lb $s3, space_char
+              lb $s4, tab_char
 
               la $s0, input_str                    # Load register with address of user input
               add $t0, $zero, $zero                # Initialize counter to zero
@@ -19,16 +25,19 @@
               Loop1:
                     add $t1, $t0, $s0                    # Get the current character's address
                     lb $t2, 0($t1)                       # Load register $t2 with the current character
-                    beq $t2, 0, PrintInvalid             # If current char is the null char, the string is empty. Therefore, invalid
-                    beq $t2, 10, PrintInvalid            # If current char is the newline char, the string is empty. Therefore, invalid
-                    bne $t2, 32, CheckTab                # If the current char is not a space character, go to subroutine to check if it's a tab
+                    beq $t2, $s1, PrintInvalid           # If current char is the null char, the string is empty. Therefore, invalid
+                    beq $t2, $s2, PrintInvalid             # If current char is the newline char, the string is empty. Therefore, invalid
+                    bne $t2, $s3, CheckTab                # If the current char is not a space character, go to subroutine to check if it's a tab
                     addi $t0, $t0, 1                     # If the current char is a space, increment $t0 to check next character
                     j Loop1                              # Jump back to beginning of the loop
 
               CheckTab:
-                    bne $t2, 9, SetStartIndex            # If the current char is not a tab, then set char as the start index
+                    bne $t2, $s4, SetStartIndex            # If the current char is not a tab, then set char as the start index
                     addi $t0, $t0, 1                     # Else, increment the $t0 register to check for spaces and/or tabs in the next character
                     j Loop1                              # Jump back to Loop1 to check next character
 
               SetStartIndex:
                     add $t3, $t0, $zero                  # Load register $t3 with index of first character that is not a space/tab
+
+
+              PrintInvalid:
