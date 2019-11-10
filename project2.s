@@ -59,4 +59,12 @@
                     beq $t2, null_char, StringEnd        # If the current char is the null char, go to StringEnd
                     beq $t2, nl_char, StringEnd          # If the current char is the newline char, go to StringEnd
                     addi $t4, $t4, 1                     # Increment counter to check next character
-                    j Loop2                              # Restart Loop 
+                    j Loop2                              # Restart Loop
+
+                # This subroutine keeps track of the end of string
+                StringEnd:
+                    add $t6, $t2, $zero                  # Load the $t6 register with the index at the end of string
+                    j Loop3                              # Jump to Loop 3 to skip trailing space and tab characters
+
+                # This subroutine skips trailing spaces and tabs in input string iterating backwards from the index calculated at StringEnd
+                Loop3: 
