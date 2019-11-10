@@ -16,4 +16,11 @@
               Loop1:
                     add $t1, $t0, $s0                    # Get the current character's address
                     lb $t2, 0($t1)                       # Load register $t2 with the current character
-                    bne $t2, 32, SetStartIndex           # If the current char is not a space character, go to subroutine to set it as start index
+                    beq $t2, 0, PrintInvalid             # If current char is the null char, the string is empty. Therefore, invalid
+                    beq $t2, 10, PrintInvalid            # If current char is the newline char, the string is empty. Therefore, invalid
+                    bne $t2, 32, CheckTab                # If the current char is not a space character, go to subroutine to check if it's a tab
+
+
+              CheckTab:
+                    bne $t2, 9, SetStartIndex            # If the current char is not a tab, then set char as the start index
+                    addi $t0, $t0, 1                     # Else, increment the $t0 register to check for spaces and/or tabs in the next character
