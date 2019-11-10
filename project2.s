@@ -21,8 +21,9 @@
               la $s0, input_str                    # Load register with address of user input
 
               add $t0, $zero, $zero                # Initialize counter to zero
-              add $t3, $zero, $zero                # Initalize counter to zero
-              
+              add $t3, $zero, 1                    # Initialize $t3 to 1. Will be incremented by x30 in Loop4
+              addi $t7, $zero, 30                  # Load register $t7 with immediate 30 for calculations in Loop4
+              add $s7, $zero, $zero                # Initialize register $s7 for sum to calculate decimal value      
 
               # This subroutine is used to check for leading spaces and eliminate them by adjusting the start index of the string appropriately
               Loop1:
