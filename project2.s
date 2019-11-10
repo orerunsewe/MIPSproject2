@@ -67,4 +67,12 @@
                     j Loop3                              # Jump to Loop 3 to skip trailing space and tab characters
 
                 # This subroutine skips trailing spaces and tabs in input string iterating backwards from the index calculated at StringEnd
-                Loop3: 
+                Loop3:
+                    add $t5, $t6, $s0                    # Get last char in the string
+                    lb $t2, 0($t5)                       # Load the register with the last char in the string
+                    bne $t2, $s3, CheckTab2              # If current char is not a space char, check if it is a tab char
+
+                #This subroutine checks if the current char is a tab if it is not a space. Used for eliminating trailing tabs
+                CheckTab2:
+                    bne $t2, $s4, SetEndIndex             # If current char is also not a tab, set as end index for string
+                    addi $t6, $t6, -1                     # Decrement register storing the end of the string by -1
