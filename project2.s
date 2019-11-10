@@ -1,8 +1,10 @@
 .data
-        input_str:  .space      1001                   # Preallocate space for 1000 characters and the null string
-        invalid:    .asciiz     "Invalid Input"        # Store and null-terminate the string to be printed for invalid inputs
-
-
+        input_str:        .space      1001                   # Preallocate space for 1000 characters and the null string
+        invalid:          .asciiz     "Invalid Input"        # Store and null-terminate the string to be printed for invalid inputs
+        null_char:        .byte       0                      # Allocate byte in memory for null char
+        space_char:       .byte       32                     # Allocate byte in memory for space char
+        tab_char:         .byte       9                      # Allocate byte in memory for tab char
+        newline_char:     .byte       10                     # Allocate byte in memory for newline char            
 .text
         main:
               li $v0, 8                            # Systemcall to get the user's input
