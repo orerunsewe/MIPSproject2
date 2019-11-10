@@ -56,8 +56,8 @@
                 Loop2:
                     add $t4, $s5, $s0                    # Get current char's address starting from new start index
                     lb $t2, 0($t4)                       # Load register $t2 with the current char
-                    beq $t2, null_char, StringEnd        # If the current char is the null char, go to StringEnd
-                    beq $t2, nl_char, StringEnd          # If the current char is the newline char, go to StringEnd
+                    beq $t2, $s1, StringEnd              # If the current char is the null char, go to StringEnd
+                    beq $t2, $s2, StringEnd              # If the current char is the newline char, go to StringEnd
                     addi $t4, $t4, 1                     # Increment counter to check next character
                     j Loop2                              # Restart Loop
 
