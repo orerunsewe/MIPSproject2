@@ -22,6 +22,7 @@
 
               add $t0, $zero, $zero                # Initialize counter to zero
               add $t3, $zero, $zero                # Initalize counter to zero
+              
 
               # This subroutine is used to check for leading spaces and eliminate them by adjusting the start index of the string appropriately
               Loop1:
@@ -39,7 +40,7 @@
                     addi $t0, $t0, 1                     # Else, increment the $t0 register to check for spaces and/or tabs in the next character
                     j Loop1                              # Jump back to Loop1 to check next character
 
-              # This subroutine sets the set index after looping through all leading spaces and tabs
+              # This subroutine sets the start index after looping through all leading spaces and tabs
               SetStartIndex:
                     add $s5, $t0, $zero                  # Load register $s5 with index of first character that is not a space/tab
                     j Loop2                              # Jump to loop 2 to check for the end of the string
@@ -71,8 +72,21 @@
                     add $t5, $t6, $s0                    # Get last char in the string
                     lb $t2, 0($t5)                       # Load the register with the last char in the string
                     bne $t2, $s3, CheckTab2              # If current char is not a space char, check if it is a tab char
+                    addi $t6, $t6, -1                    # Decrement last char in string by 1 to keep checking for non space/tab char
+                    j Loop3                              # Restart Loop
 
-                #This subroutine checks if the current char is a tab if it is not a space. Used for eliminating trailing tabs
+                # This subroutine checks if the current char is a tab if it is not a space. Used for eliminating trailing tabs
                 CheckTab2:
                     bne $t2, $s4, SetEndIndex             # If current char is also not a tab, set as end index for string
                     addi $t6, $t6, -1                     # Decrement register storing the end of the string by -1
+                    j Loop3                               # Jump back to Loop3
+
+                # This subroutine sets the end index after looping through all trailing spaces and tabs
+                SetEndIndex:
+                    add $s6, $t6, $zero                   # Store the end index in register $s6
+                    j Loop4                               # Jump to Loop4
+
+                # This subroutine loops through each character and does the calculations to determine whether the string is invalid or valid
+                # If the string is invalid, the string "Invalid Input" is printed and the program exits
+                # If the string is valid, it is converted to its decimal value in this subroutine
+                Loop4:
