@@ -19,7 +19,9 @@
               lb $s4, tab_char
 
               la $s0, input_str                    # Load register with address of user input
+
               add $t0, $zero, $zero                # Initialize counter to zero
+              add $t3, $zero, $zero                # Initalize counter to zero
 
               # This subroutine is used to check for leading spaces and eliminate them by adjusting the start index of the string appropriately
               Loop1:
@@ -39,7 +41,7 @@
 
               # This subroutine sets the set index after looping through all leading spaces and tabs
               SetStartIndex:
-                    add $t3, $t0, $zero                  # Load register $t3 with index of first character that is not a space/tab
+                    add $s5, $t0, $zero                  # Load register $s5 with index of first character that is not a space/tab
                     j Loop2                              # Jump to loop 2 to check for the end of the string
 
               # This subroutine prints the string "Invalid Input" for invalid user inputs.
@@ -48,6 +50,13 @@
                     la $a0, invalid                      # Load address $a0 with the memory address of the string labeled 'invalid'
                     syscall
 
+                    # j Exit
+
                 # This subroutine checks for the index of the last character in the string by checking for the null or newline characters
                 Loop2:
-                
+                    add $t4, $s5, $s0                    # Get current char's address starting from new start index
+                    lb $t2, 0($t4)                       # Load register $t2 with the current char
+                    beq $t2, null_char, StringEnd        # If the current char is the null char, go to StringEnd
+                    beq $t2, nl_char, StringEnd          # If the current char is the newline char, go to StringEnd
+                    addi $t4, $t4, 1                     # Increment counter to check next character
+                    j Loop2                              # Restart Loop 
