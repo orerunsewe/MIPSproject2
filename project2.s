@@ -31,7 +31,7 @@
                     beq $t2, $s2, PrintInvalid           # If current char is the newline char, the string is empty. Therefore, invalid
                     bne $t2, $s3, CheckTab               # If the current char is not a space character, go to subroutine to check if it's a tab
                     addi $t0, $t0, 1                     # If the current char is a space, increment $t0 to check next character
-                    
+
                     j Loop1                              # Jump back to beginning of the loop
 
               # This subroutine checks if the current chacter is a tab only when it is not a space
@@ -92,10 +92,11 @@
                     add $s6, $t6, $zero                   # Store the end index in register $s6
                     j Initialize                          # Jump to Loop4
 
+                # This subroutine initializes registers to be used in Loop4
                 Initialize:
-                add $t0, $zero, 1                    # Initialize $t3 to 1. Will be incremented by x30 in Loop4
-                addi $t1, $zero, 30                  # Load register $t7 with immediate 30 for calculations in Loop4
-                add $s7, $zero, $zero                # Initialize register $s7 for sum to calculate decimal value
+                add $t0, $zero, 1                         # Initialize $t3 to 1. Will be incremented by x30 in Loop4
+                addi $t1, $zero, 30                       # Load register $t7 with immediate 30 for calculations in Loop4
+                add $s7, $zero, $zero                     # Initialize register $s7 for sum to calculate decimal value
 
                 j Loop4
 
@@ -103,3 +104,18 @@
                 # If the string is invalid, the string "Invalid Input" is printed and the program exits
                 # If the string is valid, it is converted to its decimal value in this subroutine
                 Loop4:
+                add $t7, $s6, $s0                         # Start reading characters for conversion from the end index in register $s6
+                lb $a2, 0($t7)                            # Load register $a2 with current character
+                jal ConvertCharToDecimal                  # Jump to subroutine to convert current char then return to next instruction
+
+                #This subroutine is used to convert the string characters to their corresponding decimal values, treating each character as a base-N number
+                # Conversions done based on formula N = 26 + (X % 11) where X is my StudentID: 02805400
+                # N = 30 so valid range is from 'a' to 't' or 'A' to 'T'
+                # Characters '0' to '9' correspond to a decimal value of 0 to 9 respectively
+                # Characters 'a' to 't' correspond to a decimal value of 10 to 29 respectively
+                # Characters 'A' to 'T' correspond to a decimal value of 10 to 29 respectively
+                # All other characters are out of range and correspond to a decimal value 0
+                # Register $a2 contains current character in the string
+                ConvertCharToDecimal:
+                add $t2, $zero, $a2       # Copy character at $a2 to temporary register $t2
+                addi $t3, $zero, 87       # Load $t3 with reference value 87 (ascii value of 'a' - 10) for conversion
