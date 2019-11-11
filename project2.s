@@ -42,6 +42,7 @@
               # This subroutine sets the start index after looping through all leading spaces and tabs
               SetStartIndex:
                     add $s5, $t0, $zero                  # Load register $s5 with index of first character that is not a space/tab
+                    add $t3, $s5, $zero                  # Move start index to register $t3 to use as counter in Loop2
                     j Loop2                              # Jump to loop 2 to check for the end of the string
 
               # This subroutine prints the string "Invalid Input" for invalid user inputs.
@@ -54,11 +55,11 @@
 
                 # This subroutine checks for the index of the last character in the string by checking for the null or newline characters
                 Loop2:
-                    add $t4, $s5, $s0                    # Get current char's address starting from new start index
+                    add $t4, $t3, $s0                    # Get current char's address starting from new start index
                     lb $t2, 0($t4)                       # Load register $t2 with the current char
                     beq $t2, $s1, StringEnd              # If the current char is the null char, go to StringEnd
                     beq $t2, $s2, StringEnd              # If the current char is the newline char, go to StringEnd
-                    addi $t4, $t4, 1                     # Increment counter to check next character
+                    addi $t3, $t3, 1                     # Increment counter to check next character
                     j Loop2                              # Restart Loop
 
                 # This subroutine keeps track of the end of string
@@ -148,3 +149,8 @@
                 syscall
 
                 j Exit                    # Jump to Exit
+
+                # Subroutine to exit program
+                Exit:
+                li, $v0, 10               # System call to exit program
+                syscall
