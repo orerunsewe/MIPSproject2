@@ -107,6 +107,11 @@
                 add $t7, $s6, $s0                         # Start reading characters for conversion from the end index in register $s6
                 lb $a2, 0($t7)                            # Load register $a2 with current character
                 jal ConvertCharToDecimal                  # Jump to subroutine to convert current char then return to next instruction
+                mult $t0, $v1                             # Multiply decimal value of char by 30^n where n char position starting from the right at 0
+                mflo $t8                                  # Move result from multiplication to the $t8 register
+                add $s7, $s7, $t8                         # Add result to the sum
+                
+
 
                 #This subroutine is used to convert the string characters to their corresponding decimal values, treating each character as a base-N number
                 # Conversions done based on formula N = 26 + (X % 11) where X is my StudentID: 02805400
@@ -129,4 +134,8 @@
                 bge $t2, '0', Return1                     # If current char is between '0' and '9', go to Return1 to convert
                 blt $t2, '0', PrintInvalid                # For all other characters out of the range, go to PrintInvalid
 
-                
+                # This subroutine calculates the decimal value of the character
+                # The result is returned in $v1
+                Return1:
+                sub $v1, $t2, $t3         # subtract the the reference value in $t3 from the character's 1-byte ascii value
+                jr $ra                    # Return the decimal value in $v1 to Loop4
