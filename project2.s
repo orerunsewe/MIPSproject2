@@ -64,7 +64,8 @@
 
                 # This subroutine keeps track of the end of string
                 StringEnd:
-                    add $t6, $t2, $zero                  # Load the $t6 register with the index at the end of string
+                    add $t6, $t3, $zero                  # Load the $t6 register with the index at the end of string
+                    addi $t6, $t6, -1                    # Subtract by -1 to get char that is not null/nl
                     j Loop3                              # Jump to Loop 3 to skip trailing space and tab characters
 
                 # This subroutine skips trailing spaces and tabs in input string iterating backwards from the index calculated at StringEnd
@@ -84,7 +85,15 @@
                 # This subroutine sets the end index after looping through all trailing spaces and tabs
                 SetEndIndex:
                     add $s6, $t6, $zero                   # Store the end index in register $s6
-                    j Initialize                          # Jump to Loop4
+                    j CheckValidLength                    # Jump to CheckValidLength
+
+
+                # This subroutine checks if the length of the string is valid (not more than 4 characters)
+                CheckValidLength:
+                    addi, $t1, $zero, 3                   # Initalize $t1 register to equal 3
+                    sub $t5, $s6, $s5                     # Check the difference between end index and start index
+                    bgt $t5, $t1, PrintInvalid            # If the difference is greater than 3, there are more than 4 chars. Go to PrintInvalid
+                    j Initialize                          # Jump to Initialize to initialize registers for Loop4
 
                 # This subroutine initializes registers to be used in Loop4
                 Initialize:
