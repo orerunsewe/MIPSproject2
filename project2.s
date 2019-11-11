@@ -117,5 +117,16 @@
                 # All other characters are out of range and correspond to a decimal value 0
                 # Register $a2 contains current character in the string
                 ConvertCharToDecimal:
-                add $t2, $zero, $a2       # Copy character at $a2 to temporary register $t2
-                addi $t3, $zero, 87       # Load $t3 with reference value 87 (ascii value of 'a' - 10) for conversion
+                add $t2, $zero, $a2                       # Copy character at $a2 to temporary register $t2
+                addi $t3, $zero, 87                       # Load $t3 with reference value 87 (ascii value of 'a' - 10) for conversion
+                bgt $t2, 't', PrintInvalid                # If current character is greater than 't', it is out of range. PrintInvalid
+                bge $t2, 'a', Return1                     # If current character is between 'a' and 't', go to Return1 to convert
+                addi $t3, $zero, 55                       # Change reference value to 55 for uppercase characters
+                bgt $t2, 'T', PrintInvalid                # If current character is greater than 'T', it is out of range. Go to PrintInvalid
+                bge $t2, 'A', Return1                     # If current character is between 'A' and 'T', go to Return1 to convert
+                addi $t3, $zero, 48                       # Change reference value to 48 for numbers
+                bgt $t2, '9', PrintInvalid                # If current character is greater than '9' it is out of range. Go to PrintInvalid
+                bge $t2, '0', Return1                     # If current char is between '0' and '9', go to Return1 to convert
+                blt $t2, '0', PrintInvalid                # For all other characters out of the range, go to PrintInvalid
+
+                
