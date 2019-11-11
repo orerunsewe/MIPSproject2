@@ -50,7 +50,7 @@
                     la $a0, invalid                      # Load address $a0 with the memory address of the string labeled 'invalid'
                     syscall
 
-                    # j Exit
+                    j Exit
 
                 # This subroutine checks for the index of the last character in the string by checking for the null or newline characters
                 Loop2:
@@ -137,5 +137,14 @@
                 sub $v1, $t2, $t3         # subtract the the reference value in $t3 from the character's 1-byte ascii value
                 jr $ra                    # Return the decimal value in $v1 to Loop4
 
-                # This subroutine prints the decimal value of the sum on a new line 
+                # This subroutine prints the decimal value of the sum on a new line
                 PrintValue:
+                li $v0, 11                # System call to print character
+                li $a0, 10                # Load $a0 with 10 (ascii value for newline character)
+                syscall
+
+                li $v0, 1                 # System call to print an integer (the sum)
+                or $a0, $s7, 0            # Load register $a0 with the sum to in $s7 to be printed
+                syscall
+
+                j Exit                    # Jump to Exit
